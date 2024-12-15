@@ -1,0 +1,6 @@
+*.dcu
+*.exe
+*.obj
+__history/
+__recovery/
+*.~*
