@@ -5,7 +5,10 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, conData_u, Admin_u, Tenants_u, TenantAcc_u,
-  Vcl.Imaging.jpeg;
+  Vcl.Imaging.jpeg, IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL,
+  IdSSLOpenSSL, IdMessage, IdBaseComponent, IdComponent, IdTCPConnection,
+  IdTCPClient, IdExplicitTLSClientServerBase, IdMessageClient, IdSMTPBase,
+  IdSMTP;
 
 type
   TfrmLogin = class(TForm)
@@ -18,11 +21,18 @@ type
     Button2: TButton;
     lblNew: TLabel;
     Button3: TButton;
+    lblForgot: TLabel;
+    lblReset: TLabel;
+    IdSMTP1: TIdSMTP;
+    IdMessage1: TIdMessage;
+    IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL;
     procedure btnLoginClick(Sender: TObject);
     procedure lblAdminClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure lblNewClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure lblResetClick(Sender: TObject);
   private
     { Private declarations }
     objTenantAcc : TTenantAcc;
@@ -86,6 +96,17 @@ end;
 procedure TfrmLogin.Button2Click(Sender: TObject);
 begin
 frmTenants.show;
+end;
+
+procedure TfrmLogin.FormCreate(Sender: TObject);
+begin
+//configure SMTP
+IdSMTP1.Host := 'smtp.mail.yahoo.com'; // yahoo SMTP server
+IdSMTP1.Port := 587;  // Port for STARTTLS
+IdSMTP1.Username := 'studiohive@yahoo.com';
+IdSMTP1.Password := 'stud10H1V3';
+IdSMTP1.UseTLS := utUseExplicitTLS; // Use secure connection
+IdSMTP1.IOHandler := IdSSLIOHandlerSocketOpenSSL1; // Assign SSL handler
 end;
 
 procedure TfrmLogin.lblAdminClick(Sender: TObject);
@@ -163,6 +184,74 @@ if sID.Length =13 then
    showmessage('ID number must be 13 digits.');
    end;
 
+end;
+
+procedure TfrmLogin.lblResetClick(Sender: TObject);   //password reset
+var
+sCode, sEmail : string;
+bExists : boolean;
+iTenantID : integer;
+begin
+//generate reset code
+ sCode := inttostr(random(900000));
+//initialize bExists
+bExists := false;
+
+
+ //get username
+  sUsername := edtUsername.Text; //extract user email
+
+  if sUsername = '' then //check if a username is entered
+    begin
+      showmessage('Enter a valid username');
+    end
+    else //check if username exists in database
+    begin
+     while NOT dbmData.tblPasswords.eof do
+       begin
+        if (sUsername =dbmData.tblPasswords['Username']) then
+           begin
+            bExists := true;
+            iTenantID := dbmData.tblPasswords['TenantID']; //extract tenant ID
+            //frmLogin.close;
+            break;
+           end;
+        dbmData.tblPasswords.Next;//go to next record
+       end; //end while
+    end; //end if
+
+ if bExists = false then //error message if username does not exist
+     showmessage('Enter a valid username');
+
+//get user email from tblTenants
+ while NOT dbmData.tblTenants.eof do
+       begin
+       if iTenantID = dbmData.tblTenants['TenantID'] then
+          begin
+          sEmail := dbmData.tblTenants['Email']
+          end;
+       end; //end while
+
+
+//configure email message
+  IdMessage1.Clear;
+  IdMessage1.From.Address := 'studiohive@yahoo.com';
+  IdMessage1.Recipients.EmailAddresses := sEmail;
+  IdMessage1.Subject := 'Password Reset Code';
+  IdMessage1.Body.Text := 'Your reset code is: ' + sCode;
+
+//send the email
+   try
+
+    IdSMTP1.Connect;
+    IdSMTP1.Send(IdMessage1);
+    IdSMTP1.Disconnect;
+
+    ShowMessage('An email with the reset code has been sent.');
+  except
+    on E: Exception do
+      ShowMessage('Error sending email: ' + E.Message);
+  end;
 end;
 
 end.
