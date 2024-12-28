@@ -145,7 +145,7 @@ object frmLogin: TfrmLogin
     Top = 16
   end
   object IdMessage1: TIdMessage
-    AttachmentEncoding = 'MIME'
+    AttachmentEncoding = 'UUE'
     BccList = <>
     CCList = <>
     Encoding = meDefault

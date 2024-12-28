@@ -38,7 +38,7 @@ type
     SaveTextFileDialog: TSaveTextFileDialog;
     lblPrev: TLabel;
     lblNext: TLabel;
-    tbsSettings: TTabSheet;
+    tbsNewTenant: TTabSheet;
     lblPersonal: TLabel;
     edtName: TEdit;
     btnSave: TButton;
@@ -56,12 +56,23 @@ type
     btnDone: TButton;
     RichEdit1: TRichEdit;
     edtUsername: TEdit;
+    tbsSetting: TTabSheet;
+    Label2: TLabel;
+    Label3: TLabel;
+    edtEmail1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Edit4: TEdit;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
     procedure btnExportClick(Sender: TObject);
     procedure btnPayClick(Sender: TObject);
     procedure tbsPaymentsShow(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure tbsSettingsShow(Sender: TObject);
+    procedure tbsNewTenantShow(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure Label3Click(Sender: TObject);
   private
     { Private declarations }
     objTenantAcc: TTenantAcc;
@@ -69,7 +80,7 @@ type
     { Public declarations }
   end;
 
-var
+var //global variables
   frmTenants: TfrmTenants;
   sUsername : string;
   iTenantID : integer;
@@ -134,7 +145,7 @@ sName := edtName.Text;
 sSurname := edtSurname.Text;
 
 //edit already existing record
-if NOT (sName='') OR (sSurname='') OR (edtEmail.Text='') OR (edtPhone.Text='')then //check if any edits are empty
+if NOT (sName='') AND (sSurname='') AND (edtEmail.Text='') AND (edtPhone.Text='')then //check if any edits are empty
    begin
    dbmData.qryTenants.SQL.Text := 'UPDATE tblTenants SET ' +
                                'FirstName = "' + sName + '", ' +
@@ -191,13 +202,27 @@ sUsername := frmLogin.edtUsername.Text;
 
 end;
 
+procedure TfrmTenants.Label3Click(Sender: TObject);
+begin
+if NOT (edtEmail1.Text = '') then
+   begin
+    dbmData.qryTenants.SQL.Text := 'UPDATE tblTenants SET ' +
+                                   'Email = "' + edtEmail1.Text + '" ' +
+                                   'WHERE TenantID = "' + inttostr(iTenantID) + '"';
+    showmessage(dbmData.qryTenants.SQL.Text);
+   dbmdata.qryTenants.ExecSQL;
+   showmessage('Changes saved!');
+   end;
+
+end;
+
 procedure TfrmTenants.tbsPaymentsShow(Sender: TObject);
 begin
 //display balance
 
 end;
 
-procedure TfrmTenants.tbsSettingsShow(Sender: TObject);
+procedure TfrmTenants.tbsNewTenantShow(Sender: TObject);
 begin
  dbmData.tblTenants.First;
 while NOT dbmData.tblTenants.eof do

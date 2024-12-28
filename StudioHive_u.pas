@@ -203,7 +203,7 @@ bExists := false;
 
   if sUsername = '' then //check if a username is entered
     begin
-      showmessage('Enter a valid username');
+      showmessage('Enter a username');
     end
     else //check if username exists in database
     begin
@@ -220,17 +220,20 @@ bExists := false;
        end; //end while
     end; //end if
 
- if bExists = false then //error message if username does not exist
-     showmessage('Enter a valid username');
+if bExists = false then //error message if username does not exist
+   showmessage('Username does not exist');
 
-//get user email from tblTenants
+ //get user email from tblTenants
  while NOT dbmData.tblTenants.eof do
        begin
        if iTenantID = dbmData.tblTenants['TenantID'] then
           begin
-          sEmail := dbmData.tblTenants['Email']
+          sEmail := dbmData.tblTenants['Email'];
+          showmessage('Sending email to ' + sEmail);
           end;
+       dbmData.tblTenants.Next;
        end; //end while
+
 
 
 //configure email message
@@ -246,7 +249,6 @@ bExists := false;
     IdSMTP1.Connect;
     IdSMTP1.Send(IdMessage1);
     IdSMTP1.Disconnect;
-
     ShowMessage('An email with the reset code has been sent.');
   except
     on E: Exception do

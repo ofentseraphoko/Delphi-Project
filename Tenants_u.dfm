@@ -17,7 +17,7 @@ object frmTenants: TfrmTenants
     Top = 0
     Width = 801
     Height = 505
-    ActivePage = tbsSettings
+    ActivePage = tbsSetting
     TabOrder = 0
     object tbsHome: TTabSheet
       Caption = 'Home'
@@ -260,10 +260,10 @@ object frmTenants: TfrmTenants
         TabOrder = 0
       end
     end
-    object tbsSettings: TTabSheet
+    object tbsNewTenant: TTabSheet
       Caption = 'Settings and Personal Information'
       ImageIndex = 3
-      OnShow = tbsSettingsShow
+      OnShow = tbsNewTenantShow
       object lblPersonal: TLabel
         Left = 120
         Top = 11
@@ -393,6 +393,83 @@ object frmTenants: TfrmTenants
         Width = 121
         Height = 23
         TabOrder = 7
+      end
+    end
+    object tbsSetting: TTabSheet
+      Caption = 'Settings'
+      ImageIndex = 4
+      object Label2: TLabel
+        Left = 72
+        Top = 3
+        Width = 94
+        Height = 29
+        Caption = 'Edit Profile'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -24
+        Font.Name = 'Arial Narrow'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label3: TLabel
+        Left = 24
+        Top = 80
+        Width = 29
+        Height = 15
+        Caption = 'Email'
+        OnClick = Label3Click
+      end
+      object Label4: TLabel
+        Left = 24
+        Top = 128
+        Width = 34
+        Height = 15
+        Caption = 'Phone'
+      end
+      object Label5: TLabel
+        Left = 24
+        Top = 171
+        Width = 53
+        Height = 15
+        Caption = 'Username'
+      end
+      object Label6: TLabel
+        Left = 24
+        Top = 224
+        Width = 50
+        Height = 15
+        Caption = 'Password'
+      end
+      object edtEmail1: TEdit
+        Left = 88
+        Top = 77
+        Width = 201
+        Height = 23
+        TabOrder = 0
+      end
+      object Edit2: TEdit
+        Left = 88
+        Top = 120
+        Width = 201
+        Height = 23
+        TabOrder = 1
+        Text = 'Edit2'
+      end
+      object Edit3: TEdit
+        Left = 88
+        Top = 168
+        Width = 201
+        Height = 23
+        TabOrder = 2
+        Text = 'Edit3'
+      end
+      object Edit4: TEdit
+        Left = 88
+        Top = 216
+        Width = 201
+        Height = 23
+        TabOrder = 3
+        Text = 'Edit4'
       end
     end
   end
